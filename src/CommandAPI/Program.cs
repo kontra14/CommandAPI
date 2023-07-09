@@ -1,3 +1,5 @@
+using CommandAPI.Data;
+
 var builder = WebApplication.CreateBuilder(args);
 
 ConfigureServices(builder.Services);
@@ -20,4 +22,5 @@ void ConfigureServices(IServiceCollection services)
 {
     //SECTION 1. Add code below
     services.AddControllers();
+    services.AddScoped<ICommandAPIRepo, MockCommandAPIRepo>();
 }
