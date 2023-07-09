@@ -1,20 +1,30 @@
 using CommandAPI.Data;
 using Microsoft.EntityFrameworkCore;
+using Npgsql;
 
 var builder = WebApplication.CreateBuilder(args);
 
-//var configuration = builder.Configuration;
+var connectionStringBuilder = new NpgsqlConnectionStringBuilder();
 
-//ConfigureServices(builder.Services, builder.Configuration);
+connectionStringBuilder.ConnectionString =
+    builder.Configuration.GetConnectionString("PostgreSqlConnection");
+ connectionStringBuilder.Username = builder.Configuration["UserID"];
+ connectionStringBuilder.Password = builder.Configuration["Password"];
 
-// Add services to the container.
 builder.Services.AddControllers();
+
 //builder.Services.AddScoped<ICommandAPIRepo, MockCommandAPIRepo>();
 builder.Services.AddScoped<ICommandAPIRepo, SqlCommandAPIRepo>();
-builder.Services.AddDbContext<CommandContext>(opt => opt.UseNpgsql
-    (builder.Configuration.GetConnectionString("PostgreSqlConnection")));
+builder.Services.AddDbContext<CommandContext>(opt => opt.UseNpgsql(connectionStringBuilder.ConnectionString));
 
 var app = builder.Build();
+
+// Configure the HTTP request pipeline.
+if (app.Environment.IsDevelopment())
+{
+    // app.UseSwagger();
+    // app.UseSwaggerUI();
+}
 
 app.UseRouting();
 
@@ -24,11 +34,3 @@ app.MapControllerRoute(
     pattern: "{controller=Home}/{action=Index}/{id?}");
 
 app.Run();
-
-// void ConfigureServices(IServiceCollection services, IConfiguration configuration)
-// {
-//     services.AddControllers();
-//     services.AddScoped<ICommandAPIRepo, MockCommandAPIRepo>();
-//     services.AddDbContext<CommandContext>(opt => opt.UseNpgsql
-//         (configuration.GetConnectionString("PostgreSqlConnection")));
-// }
