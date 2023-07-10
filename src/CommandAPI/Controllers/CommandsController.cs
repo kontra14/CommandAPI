@@ -23,7 +23,7 @@ namespace CommandAPI.Controllers
         }
 
         [HttpGet]
-        public ActionResult<IEnumerable<CommandReadDto>> Get()
+        public ActionResult<IEnumerable<CommandReadDto>> GetAllCommands()
         {
             var commandItems = _repository.GetAllCommands();
 
