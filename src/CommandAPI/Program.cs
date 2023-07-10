@@ -1,6 +1,7 @@
 using CommandAPI.Data;
 using Microsoft.EntityFrameworkCore;
 using Npgsql;
+using AutoMapper;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -12,6 +13,7 @@ connectionStringBuilder.ConnectionString =
  connectionStringBuilder.Password = builder.Configuration["Password"];
 
 builder.Services.AddControllers();
+builder.Services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
 
 //builder.Services.AddScoped<ICommandAPIRepo, MockCommandAPIRepo>();
 builder.Services.AddScoped<ICommandAPIRepo, SqlCommandAPIRepo>();
