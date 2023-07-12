@@ -1,18 +1,21 @@
 using Microsoft.EntityFrameworkCore;
 using Microsoft.AspNetCore.Builder;
 using CommandAPI.Data;
-using Npgsql;
+// using Npgsql;
 using AutoMapper;
 using Newtonsoft.Json.Serialization;
+using MySql.Data.MySqlClient;
 
 var builder = WebApplication.CreateBuilder(args);
 
-var connectionStringBuilder = new NpgsqlConnectionStringBuilder();
+// var connectionStringBuilder = new NpgsqlConnectionStringBuilder();
+var connectionStringBuilder = new MySqlConnectionStringBuilder();
 
 connectionStringBuilder.ConnectionString =
-    builder.Configuration.GetConnectionString("PostgreSqlConnection");
- connectionStringBuilder.Username = builder.Configuration["UserID"];
- connectionStringBuilder.Password = builder.Configuration["Password"];
+    builder.Configuration.GetConnectionString("MysqlSqlConnection");
+    // builder.Configuration.GetConnectionString("PostgreSqlConnection");
+//  connectionStringBuilder.Username = builder.Configuration["UserID"];
+//  connectionStringBuilder.Password = builder.Configuration["Password"];
 
 builder.Services.AddControllers();
 builder.Services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
@@ -24,7 +27,10 @@ builder.Services.AddControllers().AddNewtonsoftJson(s =>
 
 //builder.Services.AddScoped<ICommandAPIRepo, MockCommandAPIRepo>();
 builder.Services.AddScoped<ICommandAPIRepo, SqlCommandAPIRepo>();
-builder.Services.AddDbContext<CommandContext>(opt => opt.UseNpgsql(connectionStringBuilder.ConnectionString));
+builder.Services.AddDbContext<CommandContext>(opt 
+    => opt.UseMySQL(connectionStringBuilder.ConnectionString));
+// builder.Services.AddDbContext<CommandContext>(opt 
+//     => opt.UseNpgsql(connectionStringBuilder.ConnectionString));
 
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
